@@ -1,0 +1,22 @@
+{
+  "name": "skype_bot",
+  "version": "1.0.0",
+  "description": "Ejemplos de chatbots para la plataforma Skype",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/speed676/Examples-chatbots"
+  },
+  "keywords": [
+    "skypebot"
+  ],
+  "author": "Victor Guillem Agustí",
+  "license": "ISC",
+  "dependencies": {
+    "botbuilder": "^3.8.3",
+    "restify": "^4.3.0"
+  }
+}
