@@ -4,7 +4,8 @@
   "description": "Test kik bot",
   "main": "index.js",
   "dependencies": {
-    "@kikinteractive/kik": "^2.2.1"
+    "@kikinteractive/kik": "^2.2.1",
+    "traductor_bot": "^1.0.0"
   },
   "devDependencies": {},
   "scripts": {
