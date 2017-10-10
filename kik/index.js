@@ -25,25 +25,22 @@ function enviarMensaje() {
     };
 	return TraductorBot.KikBot.translateToBot(jsonGenerico);
 }
-enviarMensaje();
+console.log(enviarMensaje());
 
 bot.onTextMessage((message) => {
-	// console.log(Bot.Message.text("Holi"));
-    // message.reply(enviarMensaje());
 	console.log(message.body);
 	let election = message.body.split(" ");
 	console.log(election[0]);
 	switch(election[0]){
 		case "/image":
 			message.reply(Bot.Message.picture('http://i.imgur.com/oalyVlU.jpg'));
-		break;
+			break;
 		case "/text":
-
 			message.reply(election[1]);
-		break;
+			break;
 		default:
 			message.reply("Holi, no se ha recibio na de na men.");
-		break;
+			break;
 	}
 });
 
