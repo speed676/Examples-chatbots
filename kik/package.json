@@ -1,0 +1,15 @@
+{
+  "name": "kikbot",
+  "version": "1.0.0",
+  "description": "Test kik bot",
+  "main": "index.js",
+  "dependencies": {
+    "@kikinteractive/kik": "^2.2.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

@@ -1,0 +1,5 @@
+.jscsrc
+.gitignore
+.travis.yml
+coverage/
+test/

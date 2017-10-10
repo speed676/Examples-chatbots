@@ -1,0 +1,155 @@
+[![NPM Version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Coverage Status][coveralls-image]][coveralls-url]
+
+## Getting Started
+
+Use this library to communicate with the Kik API to develop a bot for [Kik Messenger][kik-url]. Got to [dev.kik.com][dev-kik-url] to learn more and start building a bot.
+
+- Install with [`npm install @kikinteractive/kik`][npm-url]
+
+## Contributing
+
+This project adheres to the Contributor Covenant [code of conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to bots@kik.com.
+
+If you're looking to contribute the the `kik` package, check out the [Contributing Guide](/CONTRIBUTING.md).
+
+## Getting Help
+
+Here are other resources for using Kik node:
+
+- [stackoverflow.com][stackoverflow-url] is a great place to get answers about building a Kik chat bot.
+- Go to [dev.kik.com][dev-kik-url] to get started building a bot, scan the code at dev.kik.com and talk to Botsworth.
+
+## License
+
+The Kik bot library is released under the terms of the MIT license. See [License](LICENSE.md) for more information or see https://opensource.org/licenses/MIT.
+
+## How To
+
+Creating a basic Kik bot is simple:
+
+1. Import `@kikinteractive/kik`
+2. Create a bot with the username and API key you got from https://dev.kik.com/
+3. Configure your bot as described in the [documentation][dev-config-kik-url]
+4. Add the bot as middleware to your server with `bot.incoming()`
+5. Start your web server
+
+You can use any node-style web server to host your Kik bot. Add handlers to your bot by calling `bot.onTextMessage(...)` and get notified whenever a user messages you. Take action on the messages as they come in and call `message.reply(...)` to respond to the message within the chat the message was sent from.
+
+Check out the full API documentation for more advanced uses.
+
+### Your first echo bot
+
+```javascript
+'use strict';
+
+let util = require('util');
+let http = require('http');
+let Bot  = require('@kikinteractive/kik');
+
+// Configure the bot API endpoint, details for your bot
+let bot = new Bot({
+    username: 'echo.bot',
+    apiKey: '7b939d69-e840-4d22-aab8-4188c2198f8a',
+    baseUrl: 'https://kik-echobot.ngrok.io/'
+});
+
+bot.updateBotConfiguration();
+
+bot.onTextMessage((message) => {
+    message.reply(message.body);
+});
+
+// Set up your server and start listening
+let server = http
+    .createServer(bot.incoming())
+    .listen(process.env.PORT || 8080);
+```
+
+### Sending a message to a specific user
+
+You can send a targeted message to a user once they have subscribed to your bot. If you want to send someone a message, just call `bot.send(...)` with their username. You don't need to specify a chat ID here since you are sending it directly to the user, not within a specific chat.
+
+```javascript
+// To one user (a.username)
+bot.send(Bot.Message.text('Hey, nice to meet you!'), 'a.username');
+
+// You can use a shorthand for text messages to keep things a bit cleaner
+bot.send('Getting started is super easy!', 'a.username');
+```
+
+### Sending a picture message
+
+If you want to send a photo to a user you can send a `picture` message. The API will download the image you supply and pass it along. You have to set the attribution name and icon for the message so the knows where the content came from even if it's forwarded later.
+
+```javascript
+bot.send(Bot.Message.picture('http://i.imgur.com/oalyVlU.jpg')
+    .setAttributionName('Imgur')
+    .setAttributionIcon('http://s.imgur.com/images/favicon-96x96.png'),
+    'a.username');
+```
+
+### Greeting a user by name
+
+Whenever a user subscribes to your bot, your bot will receive a `start-chatting` message. This message gives you the chance to say hello to the user and let them know what your bot is about.
+
+You might want to greet your new user by name. You can use the `bot.getUserProfile(...)` method to request information about users who have subscribed to your bot.
+
+```javascript
+bot.onStartChattingMessage((message) => {
+    bot.getUserProfile(message.from)
+        .then((user) => {
+            message.reply(`Hey ${user.firstName}!`);
+        });
+});
+```
+
+### Adding multiple handlers
+
+Separating different states into multiple message handlers can keep your bot logic under control. If you call `next` from within your handler, you allow the next handler in the chain to run, otherwise, handling of the incoming message will end with the current handler.
+
+```javascript
+bot.onTextMessage((message, next) => {
+    const userState = getUserState(message.from);
+
+    if (!userState.inIntroState) {
+        // Send the user the intro state
+        // ...
+
+        return;
+    }
+
+    // Allow the next handler take over
+    next();
+});
+
+bot.onTextMessage((message) => {
+    searchFor(message.body)
+        .then((result) => {
+            message.reply(result);
+        });
+});
+```
+
+[travis-image]: https://travis-ci.org/kikinteractive/kik-node.svg?branch=master
+[travis-url]: https://travis-ci.org/kikinteractive/kik-node
+
+[dev-kik-url]: https://dev.kik.com/
+[dev-config-kik-url]: https://dev.kik.com/#/docs/messaging#configuration
+[kik-url]: https://kik.com/
+
+[coveralls-image]: https://coveralls.io/repos/github/kikinteractive/kik-node/badge.svg?branch=master
+[coveralls-url]: https://coveralls.io/github/kikinteractive/kik-node?branch=master
+
+[npm-image]: https://img.shields.io/npm/v/@kikinteractive/kik.svg?style=flat-square
+[npm-url]: https://www.npmjs.org/package/@kikinteractive/kik
+
+[stackoverflow-url]: http://stackoverflow.com/questions/tagged/kik
+
+## API Documentation
+
+{{#class name="Bot"~}}{{>docs}}{{/class}}
+{{#class name="IncomingMessage"~}}{{>docs}}{{/class}}
+{{#callback name="MessageCallbackHandler"~}}{{>docs}}{{/callback}}
+{{#class name="UserProfile"~}}{{>docs}}{{/class}}
+{{#class name="Message"~}}{{>docs}}{{/class}}
+{{#class name="KikCode"~}}{{>docs}}{{/class}}
